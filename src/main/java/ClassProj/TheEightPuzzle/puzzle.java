@@ -1,6 +1,7 @@
 package ClassProj.TheEightPuzzle;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class puzzle {
@@ -8,7 +9,9 @@ public class puzzle {
 	private Integer side;
 	private Integer star_x;
 	private Integer star_y;
-
+	public Integer depth;
+	public Integer priority;
+	
 	/*
 	 * This is a default constructor
 	 */
@@ -17,8 +20,23 @@ public class puzzle {
 		this.side = 0;
 		this.star_x = 0;
 		this.star_y = 0;
+		depth = 0;
+		priority = 0;
 	}
 	
+	public puzzle(puzzle p) {
+		this.instance = new ArrayList< List<String> > ();
+		for(int i = 0; i< p.getInstance().size(); i++) {
+			this.instance.add(new ArrayList<String> (p.getInstance().get(i)));
+		}
+		this.side = p.getSide();
+		this.star_x = p.getStar_x();
+		this.star_y = p.getStar_y();
+		this.depth = p.depth;
+		this.priority = p.priority;
+	}
+
+
 	/*
 	 * This is a constructor, it takes in the sides of the puzzle
 	 * as well as the values in the puzzle in a form of List of Strings
@@ -30,6 +48,8 @@ public class puzzle {
 		this.side = side;
 		this.star_x = 0;
 		this.star_y = 0;
+		this.depth = 0;
+		this.priority = 0;
 		for (int i = 0; i < side; i++) {
 			List <String> row = new ArrayList<String> ();
 			for (int j = 0; j < side; j++) {
@@ -49,18 +69,47 @@ public class puzzle {
 	/*
 	 * This function returns all the legal moves
 	 */
-	public void list_legal_moves() {
+	public List<Integer> problemOPERATORS() {
+		List<Integer> legal_move_list = new LinkedList<Integer> ();
+		/*
+		 * up 		- 1
+		 * down 	- 2
+		 * left 	- 3 
+		 * right 	- 4
+		 */
 		if(this.star_x>0) {
-			System.out.println("- move up");
+			legal_move_list.add(1);
 		}
 		if(this.star_x<this.side-1) {
-			System.out.println("- move down");
+			legal_move_list.add(2);
 		}
 		if(this.star_y>0) {
-			System.out.println("- move left");
+			legal_move_list.add(3);
 		}
 		if(this.star_y<this.side-1) {
-			System.out.println("- move right");
+			legal_move_list.add(4);
+		}
+		return legal_move_list;
+	}
+	
+	public void makeMove(Integer moveID) {
+		/*
+		 * up 		- 1
+		 * down 	- 2
+		 * left 	- 3 
+		 * right 	- 4
+		 */
+		if (moveID ==1) {
+			move_up();
+		} else if (moveID==2) {
+			move_down();
+		} else if (moveID==3) {
+			move_left();
+		} else if (moveID==4) {
+			move_right();
+		} else {
+			System.err.println("Illegal move ID, program abort!");
+    		System.exit(0);
 		}
 	}
 	
@@ -72,9 +121,9 @@ public class puzzle {
 			System.out.println("bumping the wall!");
 			return;
 		}
-		String temp = instance.get(this.star_x -1).get(this.star_y);
-		instance.get(this.star_x-1).set(this.star_y, "*");
-		instance.get(this.star_x).set(this.star_y, temp);
+		String temp = this.instance.get(this.star_x -1).get(this.star_y);
+		this.instance.get(this.star_x-1).set(this.star_y, "*");
+		this.instance.get(this.star_x).set(this.star_y, temp);
 		this.star_x = this.star_x -1 ;
 	}
 	
@@ -141,6 +190,25 @@ public class puzzle {
 		}
 	}
 
+	/* check if the puzzle is at goal state
+	 * function returns false if its not goal state
+	 * function returns true if it is at goal state
+	 */
+	public boolean GOAL_TEST() {
+		Integer val = 1;
+		for (int i = 0; i < side; i++) {
+			for (int j = 0; j < side; j++) {
+				if (!( (i==this.side-1) && (j==this.side-1) )) {
+					if(!this.instance.get(i).get(j).equals(Integer.toString(val)))
+						return false;
+				}
+				val = val + 1;
+			}
+		}
+		System.out.println("Goal! The depth is: " + this.depth);
+		return true;
+	}
+	
 	/*
 	 * Returns side of the puzzle
 	 */
@@ -169,4 +237,19 @@ public class puzzle {
 		this.instance = instance;
 	}
 	
+	public Integer getStar_x() {
+		return star_x;
+	}
+
+	public void setStar_x(Integer star_x) {
+		this.star_x = star_x;
+	}
+
+	public Integer getStar_y() {
+		return star_y;
+	}
+
+	public void setStar_y(Integer star_y) {
+		this.star_y = star_y;
+	}
 }
