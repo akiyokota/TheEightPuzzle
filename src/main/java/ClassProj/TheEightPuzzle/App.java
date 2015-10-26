@@ -25,8 +25,13 @@ public class App
 	//public static Queue<puzzle> nodes = new LinkedList<puzzle> ();
 	public static PriorityQueue<puzzle>nodes = new PriorityQueue<puzzle> (10, priorityComparator);
     
+	//keeps track of all the moves made with the puzzle, mainly used to check repeated states
 	public static List<puzzle> moveHistory = new LinkedList<puzzle>();
+	
+	//user input : choice of search algorithm
 	public static int searchMode = 0;
+	
+	public static int maxNodesInQueue = 0;
 	
 	/* This function reads the file provided by the filename(with lcoation)
 	 * returns the content of the file
@@ -102,6 +107,7 @@ public class App
 	public static puzzle MAKE_NODE(String problem_INITIAL_STATE) {
 		List<String> normalizedInput = Arrays.asList(problem_INITIAL_STATE.split(" "));
     	Integer side = (int)Math.sqrt(normalizedInput.size());
+    	maxNodesInQueue = 1;
     	return new puzzle(side, normalizedInput);
 	}
 	
@@ -117,20 +123,79 @@ public class App
 			puzzle newNode = new puzzle(node);
 			newNode.makeMove(i);
 			newNode.depth = newNode.depth + 1;
-			newNode.priority = newNode.priority + 1;
 			states.add(newNode);
 		}
 		return states;
 	}
 
+	public static int misplacedTileEstimation (puzzle p) {
+		int estimation = 0;
+		
+		Integer val = 1;
+		for (int i = 0; i < p.getSide(); i++) {
+			for (int j = 0; j < p.getSide(); j++) {
+				if (!( (i==p.getSide()-1) && (j==p.getSide()-1) )) {
+					if(!p.getInstance().get(i).get(j).equals(Integer.toString(val)))
+						estimation = estimation + 1;
+				}
+				val = val + 1;
+			}
+		}
+		
+		return estimation;
+	}
+	
+	public static int manhattanDistanceCalc (int x, int y, int side, int val) {
+		Integer v = 1;
+		for (int i = 0; i < side; i++) {
+			for (int j = 0; j < side; j++) {
+				if (v == val) 
+					return Math.abs(x - i) + Math.abs(x - j);
+				v = v + 1;
+			}
+		}
+		return 0;
+	}
+	
+	public static int manhattanDistanceEstimation (puzzle p) {
+		int estimation = 0;
+		
+		Integer val = 1;
+		for (int i = 0; i < p.getSide(); i++) {
+			for (int j = 0; j < p.getSide(); j++) {
+				if (!(p.getInstance().get(i).get(j).equals("*"))) {
+					if(!p.getInstance().get(i).get(j).equals(Integer.toString(val)))
+						estimation = estimation + manhattanDistanceCalc(i, j, p.getSide(), Integer.parseInt(p.getInstance().get(i).get(j)));
+				}
+				val = val + 1;
+			}
+		}
+		
+		return estimation;
+	}
+	
+	public static void costGenerator (puzzle p) {
+		if(searchMode==1) {
+			p.priority = p.priority + 1;
+		} else if(searchMode ==2) {
+			p.priority = misplacedTileEstimation(p) + p.depth;
+		} else if(searchMode ==3) {
+			p.priority = manhattanDistanceEstimation(p) + p.depth;
+		} else {
+			System.err.println("Illegal move ID, program abort!");
+    		System.exit(0);
+		}
+	}
 	
 	public static PriorityQueue<puzzle> QUEUEING_FUNCTION (PriorityQueue<puzzle> nodes, List<puzzle> problemOERATORS) {
 		for(puzzle p: problemOERATORS) {
 			if(!isRepeatedState(p)) {
+				costGenerator(p);
 				nodes.add(p);
 				moveHistory.add(p);
 			}
 		}
+		maxNodesInQueue = Math.max(maxNodesInQueue, nodes.size());
 		return nodes;
 	}
 
@@ -172,8 +237,10 @@ public class App
     {
     	String problem = createPuzzle();
     	
-    	general_search(problem, searchMode);
-    	
+    	puzzle p = general_search(problem, searchMode);
+    	System.out.println("To solve this problem, the search algorithm expanded total of " + moveHistory.size() + " nodes.");
+    	System.out.println("The maximum number of nodes in the queue at any one time was " + maxNodesInQueue);
+    	System.out.println("The depth of the goal node was " + p.depth);
     	return;
     }
 }

@@ -205,9 +205,11 @@ public class puzzle {
 				val = val + 1;
 			}
 		}
-		System.out.println("Goal! The depth is: " + this.depth);
+		
 		return true;
 	}
+	
+
 	
 	/*
 	 * Returns side of the puzzle
