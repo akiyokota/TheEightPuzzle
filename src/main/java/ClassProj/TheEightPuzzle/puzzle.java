@@ -182,7 +182,6 @@ public class puzzle {
 	 * This function prints out the puzzle at current state
 	 */
 	public void print() {
-		System.out.println("The puzzle is : ");
 		for (int i = 0; i < side; i++) {
 			for (int j = 0; j < side; j++) {
 				System.out.print(this.instance.get(i).get(j) + "\t" );

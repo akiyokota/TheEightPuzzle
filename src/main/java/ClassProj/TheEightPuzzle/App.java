@@ -238,6 +238,23 @@ public class App
 		return false;	
 	}
 
+	/* printing the next expanding node with info of g(n) and f(n) */
+	public static void printNextNode(puzzle p) {
+		System.out.print("The best state to expand with a g(n)=" + p.depth + " and h(n)=");
+		if(searchMode==1) {
+			System.out.print("1");
+		} else if(searchMode ==2) {
+			System.out.print(misplacedTileEstimation(p));
+		} else if(searchMode ==3) {
+			System.out.print(manhattanDistanceEstimation(p));
+		} else {
+			System.err.print("Illegal move ID, program abort!");
+    		System.exit(0);
+		}
+		System.out.println(" is ...");
+		p.print();
+	}
+	
 	/*
 	 * function general-search(problem,QUEUEING-FUNCTION)
 	 * nodes = MAKE-QUEUE(MAKE-NODE(problem.INITIAL-STATE))
@@ -254,7 +271,7 @@ public class App
 			if(nodes.isEmpty())
 				return null;
 			puzzle node = nodes.remove(); 
-			node.print();
+			printNextNode(node);
 			if(node.GOAL_TEST()) 
 				return node;
 			nodes = QUEUEING_FUNCTION(nodes, EXPAND(node, node.problemOPERATORS()));
@@ -266,6 +283,7 @@ public class App
     	String problem = createPuzzle();
     	
     	puzzle goal_state = general_search(problem, searchMode);
+    	System.out.println("Goal!!\n");
     	System.out.println("To solve this problem, the search algorithm expanded total of " + moveHistory.size() + " nodes.");
     	System.out.println("The maximum number of nodes in the queue at any one time was " + maxNodesInQueue);
     	System.out.println("The depth of the goal node was " + goal_state.depth);
