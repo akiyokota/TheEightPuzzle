@@ -24,6 +24,7 @@ public class puzzle {
 		priority = 0;
 	}
 	
+	/* This is the copy constructor for the class */
 	public puzzle(puzzle p) {
 		this.instance = new ArrayList< List<String> > ();
 		for(int i = 0; i< p.getInstance().size(); i++) {
@@ -209,8 +210,6 @@ public class puzzle {
 		return true;
 	}
 	
-
-	
 	/*
 	 * Returns side of the puzzle
 	 */
@@ -239,18 +238,22 @@ public class puzzle {
 		this.instance = instance;
 	}
 	
+	/*return the x coordination of '*' */
 	public Integer getStar_x() {
 		return star_x;
 	}
 
+	/*set the x coordination of '*' */
 	public void setStar_x(Integer star_x) {
 		this.star_x = star_x;
 	}
 
+	/*return the y coordination of '*' */
 	public Integer getStar_y() {
 		return star_y;
 	}
 
+	/*set the x coordination of '*' */
 	public void setStar_y(Integer star_y) {
 		this.star_y = star_y;
 	}

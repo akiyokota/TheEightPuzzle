@@ -104,6 +104,7 @@ public class App
     	return problem;
 	}
 	
+	/* this function creates the puzzle with a valid string */
 	public static puzzle MAKE_NODE(String problem_INITIAL_STATE) {
 		List<String> normalizedInput = Arrays.asList(problem_INITIAL_STATE.split(" "));
     	Integer side = (int)Math.sqrt(normalizedInput.size());
@@ -111,12 +112,19 @@ public class App
     	return new puzzle(side, normalizedInput);
 	}
 	
+	/*
+	 * This function makes a priorityQueue with p in the top.
+	 */
 	public static PriorityQueue<puzzle> MAKE_QUEUE(puzzle p) {
 		PriorityQueue<puzzle> q = new PriorityQueue<puzzle>(10, priorityComparator);
 		q.add(p);
 		return q;
 	}
 	
+	/*
+	 * This function takes in a list of legal moves that can perform on node
+	 * return a list of after legal move nodes.
+	 */
 	public static List<puzzle> EXPAND(puzzle node, List<Integer> problemOPERATORS) {
 		List<puzzle> states = new LinkedList<puzzle> ();
 		for (Integer i : problemOPERATORS) {
@@ -128,6 +136,9 @@ public class App
 		return states;
 	}
 
+	/*
+	 * This function calculates number of misplaced tile in the puzzle
+	 */
 	public static int misplacedTileEstimation (puzzle p) {
 		int estimation = 0;
 		
@@ -145,6 +156,9 @@ public class App
 		return estimation;
 	}
 	
+	/*
+	 * This is the helper function to calculate the manhattan distance of one single block
+	 */
 	public static int manhattanDistanceCalc (int x, int y, int side, int val) {
 		Integer v = 1;
 		for (int i = 0; i < side; i++) {
@@ -157,6 +171,9 @@ public class App
 		return 0;
 	}
 	
+	/*
+	 *This function calculates the the manhattan distance of the whole puzzle
+	 */
 	public static int manhattanDistanceEstimation (puzzle p) {
 		int estimation = 0;
 		
@@ -174,6 +191,10 @@ public class App
 		return estimation;
 	}
 	
+	/*
+	 * this function generates the f(n) cost of the node,
+	 * algorithm differs with the searchMode
+	 */
 	public static void costGenerator (puzzle p) {
 		if(searchMode==1) {
 			p.priority = p.priority + 1;
@@ -187,6 +208,11 @@ public class App
 		}
 	}
 	
+	/* this is the queueing function.
+	 * It takes in a list of states with legal action performed
+	 * check if they are repeated state, add the non repeated states to the queue. 
+	 * Also update the max number of node in queue using Math.max function. 
+	 */
 	public static PriorityQueue<puzzle> QUEUEING_FUNCTION (PriorityQueue<puzzle> nodes, List<puzzle> problemOERATORS) {
 		for(puzzle p: problemOERATORS) {
 			if(!isRepeatedState(p)) {
@@ -199,7 +225,9 @@ public class App
 		return nodes;
 	}
 
-
+	/*this function passes in a puzzle node, and check if it's a repeated state.
+	 * return true if it's repeated, false if it isn't
+	 */
 	private static boolean isRepeatedState(puzzle node) {
 		if(!moveHistory.isEmpty()) {
 			for (puzzle p : moveHistory) {
@@ -237,10 +265,10 @@ public class App
     {
     	String problem = createPuzzle();
     	
-    	puzzle p = general_search(problem, searchMode);
+    	puzzle goal_state = general_search(problem, searchMode);
     	System.out.println("To solve this problem, the search algorithm expanded total of " + moveHistory.size() + " nodes.");
     	System.out.println("The maximum number of nodes in the queue at any one time was " + maxNodesInQueue);
-    	System.out.println("The depth of the goal node was " + p.depth);
+    	System.out.println("The depth of the goal node was " + goal_state.depth);
     	return;
     }
 }
