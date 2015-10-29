@@ -253,6 +253,7 @@ public class App
 		}
 		System.out.println(" is ...");
 		p.print();
+		System.out.println("\t Expanding this node...");
 	}
 	
 	/*
@@ -271,9 +272,9 @@ public class App
 			if(nodes.isEmpty())
 				return null;
 			puzzle node = nodes.remove(); 
-			printNextNode(node);
 			if(node.GOAL_TEST()) 
 				return node;
+			printNextNode(node);
 			nodes = QUEUEING_FUNCTION(nodes, EXPAND(node, node.problemOPERATORS()));
 		}
 	}
