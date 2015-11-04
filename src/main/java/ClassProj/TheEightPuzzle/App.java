@@ -242,7 +242,7 @@ public class App
 	public static void printNextNode(puzzle p) {
 		System.out.print("The best state to expand with a g(n)=" + p.depth + " and h(n)=");
 		if(searchMode==1) {
-			System.out.print("1");
+			System.out.print("0");
 		} else if(searchMode ==2) {
 			System.out.print(misplacedTileEstimation(p));
 		} else if(searchMode ==3) {
@@ -284,6 +284,10 @@ public class App
     	String problem = createPuzzle();
     	
     	puzzle goal_state = general_search(problem, searchMode);
+    	if(goal_state==null) {
+    		System.out.println("No solution found.");
+    		return ;
+    	}
     	System.out.println("Goal!!\n");
     	System.out.println("To solve this problem, the search algorithm expanded total of " + moveHistory.size() + " nodes.");
     	System.out.println("The maximum number of nodes in the queue at any one time was " + maxNodesInQueue);
