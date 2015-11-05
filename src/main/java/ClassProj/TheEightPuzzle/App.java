@@ -164,7 +164,7 @@ public class App
 		for (int i = 0; i < side; i++) {
 			for (int j = 0; j < side; j++) {
 				if (v == val) 
-					return Math.abs(x - i) + Math.abs(x - j);
+					return Math.abs(x - i) + Math.abs(y - j);
 				v = v + 1;
 			}
 		}
